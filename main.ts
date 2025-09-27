@@ -53,16 +53,6 @@ interface AuthResult {
   account_token: string;
 }
 
-// 可用模型列表 - 直接使用原始模型ID
-const MODELS = [
-  "claude-3-5-sonnet",
-  "claude-3-7-sonnet",
-  "claude-4-sonnet",
-  "openai-gpt-5-chat",
-  "openai-gpt-5",
-  "openai-gpt-5-mini",
-  "openai-gpt-5-nano"
-];
 
 // 预定义的模型响应
 const MODELS_RESPONSE = {
@@ -675,13 +665,16 @@ router.post("/v1/chat/completions", async (ctx) => {
   const body = await ctx.request.body({ type: "json" }).value;
   const { model, stream = false, messages, tools, tool_choice, ...rest } = body;
 
+  // 从 MODELS_RESPONSE 获取可用模型列表
+  const availableModels = MODELS_RESPONSE.data.map(model => model.id);
+
   // 验证模型是否存在
-  if (!model || !MODELS.includes(model)) {
+  if (!model || !availableModels.includes(model)) {
     ctx.response.status = 400;
     ctx.response.headers.set("Content-Type", "application/json");
     ctx.response.body = {
       error: {
-        message: `Model '${model}' not found. Available models: ${MODELS.join(', ')}`,
+        message: `Model '${model}' not found. Available models: ${availableModels.join(', ')}`,
         type: "invalid_request_error",
         code: "MODEL_NOT_FOUND"
       }
@@ -868,11 +861,6 @@ router.post("/v1/chat/completions", async (ctx) => {
   }
 });
 
-// 根路由重定向
-router.get(/^\/$/, async (ctx) => {
-  ctx.response.status = 302;
-  ctx.response.headers.set("Location", "https://www.bilibili.com/video/BV1o14y1L7Ze/?msockid=f00e2fc275a711f090a2a0194a25db40");
-});
 
 // 应用设置
 const app = new Application();
