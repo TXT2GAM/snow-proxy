@@ -60,6 +60,7 @@ const MODELS_RESPONSE = {
     {"created": 1758960243, "id": "claude-3-5-sonnet", "object": "model", "owned_by": "anthropic"},
     {"created": 1758960243, "id": "claude-3-7-sonnet", "object": "model", "owned_by": "anthropic"},
     {"created": 1758960243, "id": "claude-4-sonnet", "object": "model", "owned_by": "anthropic"},
+    {"created": 1758960243, "id": "claude-sonnet-4-5", "object": "model", "owned_by": "anthropic"},
     {"created": 1758960243, "id": "openai-gpt-5-chat", "object": "model", "owned_by": "openai"},
     {"created": 1758960243, "id": "openai-gpt-5", "object": "model", "owned_by": "openai"},
     {"created": 1758960243, "id": "openai-gpt-5-mini", "object": "model", "owned_by": "openai"},
