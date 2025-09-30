@@ -666,18 +666,15 @@ router.post("/v1/chat/completions", async (ctx) => {
   const body = await ctx.request.body({ type: "json" }).value;
   const { model, stream = false, messages, tools, tool_choice, ...rest } = body;
 
-  // 从 MODELS_RESPONSE 获取可用模型列表
-  const availableModels = MODELS_RESPONSE.data.map(model => model.id);
-
-  // 验证模型是否存在
-  if (!model || !availableModels.includes(model)) {
+  // 验证模型参数是否提供
+  if (!model) {
     ctx.response.status = 400;
     ctx.response.headers.set("Content-Type", "application/json");
     ctx.response.body = {
       error: {
-        message: `Model '${model}' not found. Available models: ${availableModels.join(', ')}`,
+        message: "Model is required",
         type: "invalid_request_error",
-        code: "MODEL_NOT_FOUND"
+        code: "MODEL_REQUIRED"
       }
     };
     return;
@@ -712,7 +709,7 @@ router.post("/v1/chat/completions", async (ctx) => {
         if (toolsResult) {
           console.log("Tools request validated, using Cortex tools format");
           payload = {
-            model: model, // 直接使用原始模型名
+            model: model,
             messages: processedMessages,
             tools: toolsResult.cortexTools,
             tool_choice: toolsResult.cortexToolChoice,
@@ -735,7 +732,7 @@ router.post("/v1/chat/completions", async (ctx) => {
       }
     } else {
       payload = {
-        model: model, // 直接使用原始模型名
+        model: model,
         messages: processedMessages,
         ...rest,
         max_tokens: finalMaxTokens
